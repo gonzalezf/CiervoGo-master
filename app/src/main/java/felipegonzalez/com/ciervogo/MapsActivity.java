@@ -108,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                 else{ //Marcador no debe ser editado
                     flag = 0;
                     return false;
+
                 }
 
 
