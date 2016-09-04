@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -41,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
     private Marker marker = null;
     private SharedPreferences prefs = null;
+    private int flag = 0;
 
 
 
@@ -49,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         mLocationProvider = new LocationProvider(this, this); //Llamada a API para detectar ubicación.
 
@@ -73,15 +76,44 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
             @Override
             public void onMapClick(LatLng point) {
-                marker = mMap.addMarker(new MarkerOptions().position(point).draggable(true).title("Nuevo Marcador"));
+                marker = mMap.addMarker(new MarkerOptions().position(point).draggable(true).title("Editar"));
 
                 /* This code will save your location coordinates in SharedPrefrence when you click on the map and later you use it  */
-                prefs.edit().putString("Lat",String.valueOf(point.latitude)).commit();
-                prefs.edit().putString("Lng",String.valueOf(point.longitude)).commit();
+                String Latitude = String.valueOf(point.latitude);
+                String Longitud = String.valueOf(point.longitude);
+                prefs.edit().putString("Lat",Latitude).commit();
+                prefs.edit().putString("Lng",Longitud).commit();
+                Profile profile = Profile.getCurrentProfile(); //Obtener profile usuario de facebook
+                String username = profile.getId();
+
+                new InsertAnimalActivity(0).execute(username,"1",Latitude,Longitud);
+
+
+
+
 
             }
 
         });
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(Marker arg0) { // if marker should be edited
+                if(arg0.getTitle().equals("Editar")){
+                    Toast.makeText(MapsActivity.this, "funciona!", Toast.LENGTH_SHORT).show();// display toast
+                    flag = 1;
+
+                    return true;
+                }
+                else{ //Marcador no debe ser editado
+                    flag = 0;
+                    return false;
+                }
+
+
+            }
+        });
+
     }
 
     @Override
@@ -151,6 +183,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     }
 
 
+
+    // Otras Actividades
     public void getSearcher(View view)
     {
         Intent intent = new Intent(MapsActivity.this,SearchActivity.class);

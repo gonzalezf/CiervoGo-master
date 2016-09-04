@@ -18,9 +18,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class GetAnimalActivity extends AsyncTask<String, Void, String> {
+
 
         private TextView  idAnimalTextView;
         private Context context;
@@ -52,11 +54,9 @@ public class GetAnimalActivity extends AsyncTask<String, Void, String> {
                     HttpGet request = new HttpGet();
 
                     request.setURI(new URI(link));
-                    Log.e("puebla", "4");
 
                     HttpResponse response = client.execute(request);
 
-                    Log.e("puebla", "5");
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                     Log.e("puebla", "6");

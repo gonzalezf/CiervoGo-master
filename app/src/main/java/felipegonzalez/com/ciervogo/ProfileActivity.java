@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -21,11 +23,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 // My Facebook ID: 10210814575779573
 public class ProfileActivity extends ActionBarActivity {
     private TextView idAnimalTextView;
-
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class ProfileActivity extends ActionBarActivity {
 
         String birthdayDate = intent.getStringExtra("user.birthdayDate");
         idAnimalTextView = (TextView)findViewById(R.id.textView5);
+
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         if(isLoggedIn()){ //Esta logueado en facebook
@@ -51,6 +55,16 @@ public class ProfileActivity extends ActionBarActivity {
             myTextView.setText(name);
             String username = profile.getId();
             new GetAnimalActivity(this,idAnimalTextView,0).execute(username);
+
+            mListView = (ListView) findViewById(R.id.animal_list_view);
+
+            final ArrayList<Animal> animalList = Animal.getRecipesFromFile("animal.json", this);
+
+            AnimalAdapter adapter = new AnimalAdapter(this, animalList);
+            mListView.setAdapter(adapter);// 2
+
+
+
 
 
 
