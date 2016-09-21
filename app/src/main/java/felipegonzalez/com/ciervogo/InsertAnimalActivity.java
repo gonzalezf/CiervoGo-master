@@ -31,8 +31,6 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
     //flag 0 means get and 1 means post.(By default it is get.)
     public InsertAnimalActivity( int flag) {
         byGetOrPost = flag;
-        Log.e("puebla insert", "18");
-
     }
 
     protected void onPreExecute() {
@@ -43,8 +41,6 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... arg0) {
         if (byGetOrPost == 0) { //means by Get Method
 
-            Log.e("puebla insert", "10");
-
             try {
 
                 String username = (String) arg0[0];
@@ -52,7 +48,6 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
                 String latitude = (String) arg0[2];
                 String longitude = (String) arg0[3];
 
-                Log.e("puebla insert", "20");
 
                 String link = "http://192.168.50.11/insertDeteccion.php?username="+username+"&idAnimal="+idAnimal+"&latitude="+latitude+"&longitude="+longitude;
 
@@ -66,7 +61,6 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
 
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                Log.e("puebla insert", "6");
 
                 StringBuffer sb = new StringBuffer("");
                 String line = "";
@@ -121,11 +115,8 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-            /* Hacer Algo
-            this.statusField.setText("Login Successful");
-            */
-        Log.e("resultado Insert", result);
 
+        Log.e("resultado Insert", result);
 
 
     }

@@ -28,4 +28,8 @@
     <string name="idAnimal">Id Animal Bd</string>
 
     <string name="thumbnail">thumbnail</string>
+
+    <!--String Edit ANimal -->
+    <string name="buttonConfirm"> Guardar Cambios</string>
+    <string name="nameAnimalHint"> Nombre Animal</string>
 </resources>

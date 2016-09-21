@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Animal {
-
+    //Esto se hizo para mostrar los ultimos 5 animales!
     public String title;
     public String description;
     public String imageUrl;

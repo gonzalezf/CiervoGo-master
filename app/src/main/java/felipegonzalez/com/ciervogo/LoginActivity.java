@@ -94,6 +94,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             @Override
             public void onSuccess(LoginResult loginResult) {
 
+                /* Muestra el token despues de iniciada la sesion
                 info.setText(
                         "User ID: "
                                 + loginResult.getAccessToken().getUserId()
@@ -101,6 +102,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                                 "Auth Token: "
                                 + loginResult.getAccessToken().getToken()
                 );
+                */
 
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
@@ -128,6 +130,10 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 parameters.putString("fields", "id,name,email,gender,birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
+                Intent intent = new Intent(LoginActivity.this,MapsActivity.class);
+                startActivity(intent);
+
+
 
             }
 
