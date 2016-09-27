@@ -31,7 +31,7 @@ public class Deteccion {
     public void setLatitud(float Latitud){
         this.Latitud = Latitud;
     }
-    public void setLongitud(float longitud){
+    public void setLongitud(float Longitud){
         this.Longitud = Longitud;
     }
     public int getIdDeteccion(){

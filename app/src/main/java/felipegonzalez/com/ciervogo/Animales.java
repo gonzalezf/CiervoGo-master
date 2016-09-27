@@ -9,19 +9,19 @@ public class Animales {
     private int idAnimal;
     private String nombreAnimal;
 
-    public Animales(){}
+    public  Animales(){}
 
-    public Animales(int id, String name){
-        this.idAnimal = id;
-        this.nombreAnimal = name;
+    public Animales(int idAnimal, String nombreAnimal){
+        this.idAnimal = idAnimal;
+        this.nombreAnimal = nombreAnimal;
     }
 
-    public void setId(int id){
-        this.idAnimal = id;
+    public void setId(int idAnimal){
+        this.idAnimal = idAnimal;
     }
 
-    public void setName(String name){
-        this.nombreAnimal = name;
+    public void setName(String nombreAnimal){
+        this.nombreAnimal = nombreAnimal;
     }
 
     public int getId(){

@@ -144,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() { //Funciona, hay que obtener datos de marcador
             @Override
             public void onInfoWindowClick(Marker marker) {
-                if(marker.getTitle().equals("Editar")){
+                if(marker.getTitle().equals("Editar")){ //hacer que cualquier marcador al ser clickeado lleve a editar, si la id es distinta no pued eeditar
                     Intent intent = new Intent(MapsActivity.this,EditAnimalActivity.class);
 
                     //Mandar datos a la siguiente actividad..
@@ -165,6 +165,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         });
 
     }
+
+
 
     @Override
     protected void onPause() {
@@ -193,8 +195,6 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
         mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
         mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker").draggable(true));
-        //Llenar mapa con lo guardado en bd
         getMarkers();
 
     }
@@ -202,6 +202,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     public void getMarkers(){
 
         deteccionList = new ArrayList<Deteccion>();
+        animalList = new ArrayList<Animales>();
         new GetMarkersAll().execute();
 
 
@@ -251,7 +252,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             } else {
                 Log.e("JSON Data", "Didn't receive any data from server!");
             }
-            /*
+
 
             //llenar animales
             String json2 = jsonParser.makeServiceCall(linkGetAnimal, ServiceHandler.GET);
@@ -271,7 +272,12 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                                     catObj2.getString("nombreAnimal"));
 
                             Log.e("Null",cat2.getName()+String.valueOf(cat2.getId()));
-                            animalList.add(cat2);
+                            if (cat2 != null) {
+                                Log.e("es distinto de null","yei!");
+                                animalList.add(cat2);
+
+                            }
+
 
                         }
                     }
@@ -283,12 +289,12 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             } else {
                 Log.e("JSON Data", "Didn't receive any data from server!");
             }
-            */
+
 
             return null;
         }
 
-/*
+
 
         private String getNameAnimal(int idAnimal){
             if(!animalList.isEmpty()){
@@ -302,7 +308,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
             return null;
         }
-*/
+
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
@@ -312,7 +318,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             //Llenar de marcadores desde la base de datos
             for (int i = 0; i < deteccionList.size(); i++) {
                 Deteccion obj = deteccionList.get(i);
-                mMap.addMarker(new MarkerOptions().position(new LatLng(obj.getLatitud(), obj.getLongitud())).title(String.valueOf((obj.getIdAnimal()))));
+                mMap.addMarker(new MarkerOptions().position(new LatLng(obj.getLatitud(), obj.getLongitud())).title(getNameAnimal(obj.getIdAnimal())));
 
             }
 
