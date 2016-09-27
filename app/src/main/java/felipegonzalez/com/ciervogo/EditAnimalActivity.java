@@ -68,7 +68,6 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
     private Button buttonChoose;
     private Button buttonUpload;
-    private Button buttonView;
 
     private ImageView imageView;
 
@@ -83,13 +82,11 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
         buttonChoose = (Button) findViewById(R.id.btnChooseImage);
         buttonUpload = (Button) findViewById(R.id.btnUploadImage);
-        buttonView = (Button) findViewById(R.id.btnSeeImage);
 
         imageView = (ImageView) findViewById(R.id.imageView);
 
         buttonChoose.setOnClickListener(this);
         buttonUpload.setOnClickListener(this);
-
 
 
         btnAddNewAnimal = (Button) findViewById(R.id.btnAddNewAnimal);
@@ -176,7 +173,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                         String idFacebook = extras.getString("idFacebook");
 
                         //EL id new animal, sera el proporcionado por el spinnner!
-                        Log.e("Data! = ",detallesAnimal+"-"+Latitud+"-"+Longitud+"-"+idFacebook);
+                        Log.e("Data upde = ",detallesAnimal+"-"+Latitud+"-"+Longitud+"-"+idFacebook);
                         new UpdateDetallesAnimal().execute(detallesAnimal,Latitud,Longitud, idFacebook);
 
                     }
@@ -190,11 +187,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                             "Ingresa Detalles Animal", Toast.LENGTH_SHORT)
                             .show();
                 }
-
-
-
            }
-
 
         });
 
@@ -210,8 +203,11 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
         }
         if(v == buttonUpload){
 
-                uploadImage();
-
+            uploadImage();
+            /*
+            Intent myIntent = new Intent(v.getContext(), MapsActivity.class);
+            startActivity(myIntent);
+*/
 
         }
 
@@ -265,7 +261,9 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show(); //Error debe ser mostrado, mensaje de confirmacion igual
+                //retorna 0 si too sale bien o  error registering si se equivoco , lo obtiene de la otra funcion
+
 
             }
 
@@ -288,8 +286,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     
 
 
-                    Log.e("Upload link = ",UPLOAD_URL);
-                    Log.e("data = ",Latitud+"-"+Longitud+"-"+data.get(idFacebook));
+                    //Log.e("data = ",data.get(UPLOAD_KEY)+"-"+data.get(IDFACEBOOK));
 
                     String result = rh.sendPostRequest(UPLOAD_URL,data);
 

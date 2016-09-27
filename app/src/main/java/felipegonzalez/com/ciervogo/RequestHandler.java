@@ -47,7 +47,6 @@ public class RequestHandler {
         String response = "";
         try {
             url = new URL(requestURL);
-            Log.e("url = ", String.valueOf(url));
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(15000);
