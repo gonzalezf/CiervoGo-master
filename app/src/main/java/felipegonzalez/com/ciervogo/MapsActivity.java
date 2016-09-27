@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -64,8 +65,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     private Marker marker = null;
     private SharedPreferences prefs = null;
     private int flag = 0;
-    private String link = "http://192.168.50.11/getAllDeteccion.php";
-    private String linkGetAnimal = "http://192.168.50.11/getAllAnimal.php";
+    private String link = "http://nachotp.asuscomm.com:8111/getAllDeteccion.php";
+    private String linkGetAnimal = "http://nachotp.asuscomm.com:8111/getAllAnimal.php";
 
     private ArrayList<Deteccion> deteccionList;
     private ProgressDialog pDialog;
@@ -76,6 +77,10 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         setUpMapIfNeeded();
         FacebookSdk.sdkInitialize(getApplicationContext());
         mLocationProvider = new LocationProvider(this, this); //Llamada a API para detectar ubicación.
@@ -209,7 +214,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MapsActivity.this);
-            pDialog.setMessage("Fetching food categories..");
+            pDialog.setMessage("Obteniendo detecciones ..");
             pDialog.setCancelable(false);
             pDialog.show();
 

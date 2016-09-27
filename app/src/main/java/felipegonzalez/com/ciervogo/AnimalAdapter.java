@@ -67,12 +67,12 @@ public class AnimalAdapter extends BaseAdapter {
         Animal animal = (Animal) getItem(position);
 
 // 2
-        titleTextView.setText(animal.title);
-        subtitleTextView.setText(animal.description);
-        detailTextView.setText(animal.label);
+        titleTextView.setText(animal.nombreAnimal);
+        subtitleTextView.setText(animal.descripcionAnimal);
+        detailTextView.setText(animal.extincionAnimal);
 
 // 3
-        Picasso.with(mContext).load(animal.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+        Picasso.with(mContext).load(animal.linkFotoAnimal).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 
 
         return rowView;

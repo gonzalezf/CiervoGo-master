@@ -47,7 +47,7 @@ public class GetAnimalActivity extends AsyncTask<String, Void, String> {
                 try {
                     String username = (String) arg0[0];
 
-                    String link = "http://192.168.50.11/getDeteccion.php?username="+username;
+                    String link = "http://nachotp.asuscomm.com:8111/pokedex.php?username="+username;
 
                     URL url = new URL(link);
                     HttpClient client = new DefaultHttpClient();
@@ -83,7 +83,7 @@ public class GetAnimalActivity extends AsyncTask<String, Void, String> {
                     String username = (String) arg0[0];
 
 
-                    String link = "http://localhost/getDeteccion.php";
+                    String link = "http://nachotp.asuscomm.com:8111/getDeteccion.php";
                     String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
 
                     URL url = new URL(link);

@@ -3,15 +3,18 @@ package felipegonzalez.com.ciervogo;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
+import android.provider.MediaStore;
 import android.os.Bundle;
-import android.support.v7.internal.widget.AdapterViewCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,19 +25,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
-public class EditAnimalActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class EditAnimalActivity extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    private String link = "http://192.168.50.11/getAllAnimal.php";
-    private String URL_NEW_ANIMAL = "http://192.168.50.11/insertNewAnimal.php";
-    private String URL_UPDATE_ANIMAL = "http://192.168.50.11/updateidAnimal.php";
 
+    private String link = "http://nachotp.asuscomm.com:8111/getAllAnimal.php";
+    private String URL_NEW_ANIMAL = "http://nachotp.asuscomm.com:8111/insertNewAnimal.php";
+    private String URL_UPDATE_ANIMAL = "http://nachotp.asuscomm.com:8111/updateidAnimal.php";
+    private String URL_UPDATE_DETALLES_ANIMAL = "http://nachotp.asuscomm.com:8111/updateDetallesAnimal.php";
+
+    private Button btnUpdateDetallesAnimal;
     private Button btnUpdateAnimal;
     private Button btnAddNewAnimal;
     private TextView txtAnimal;
+    private TextView EditDetailsAnimal;
     private Spinner spinnerAnimal;
     // array list for spinner adapter
     private ArrayList<Animales> animalList;
@@ -44,16 +54,53 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
     public int idnewAnimal = 1;
 
+    //Subir Imagen
+
+    public static final String UPLOAD_URL = "http://nachotp.asuscomm.com:8111/uploadImage.php";
+    public static final String UPLOAD_KEY = "image";
+    public static final String LATITUD = "Latitud";
+    public static final String LONGITUD = "Longitud";
+    public static final String IDFACEBOOK = "idFacebook";
+
+    public static final String TAG = "MY MESSAGE";
+
+    private int PICK_IMAGE_REQUEST = 1;
+
+    private Button buttonChoose;
+    private Button buttonUpload;
+    private Button buttonView;
+
+    private ImageView imageView;
+
+    private Bitmap bitmap;
+
+    private Uri filePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_animal);
 
+        buttonChoose = (Button) findViewById(R.id.btnChooseImage);
+        buttonUpload = (Button) findViewById(R.id.btnUploadImage);
+        buttonView = (Button) findViewById(R.id.btnSeeImage);
+
+        imageView = (ImageView) findViewById(R.id.imageView);
+
+        buttonChoose.setOnClickListener(this);
+        buttonUpload.setOnClickListener(this);
+
+
+
         btnAddNewAnimal = (Button) findViewById(R.id.btnAddNewAnimal);
         btnUpdateAnimal = (Button) findViewById(R.id.btnUpdateAnimal);
+        btnUpdateDetallesAnimal = (Button) findViewById(R.id.btnUpdateDetallesAnimal);
 
         spinnerAnimal = (Spinner) findViewById(R.id.spinAnimal);
         txtAnimal = (TextView) findViewById(R.id.txtAnimal);
+
+        EditDetailsAnimal = (TextView) findViewById(R.id.EditDetailsAnimal);
+
 
         animalList = new ArrayList<Animales>();
 
@@ -107,14 +154,165 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                 Intent myIntent = new Intent(v.getContext(), MapsActivity.class);
                 startActivity(myIntent);
 
-
-
-
-
             }
         });
 
+
+
+        btnUpdateDetallesAnimal.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+                if (EditDetailsAnimal.getText().toString().trim().length() > 0) {
+
+                    // new category name
+                    String detallesAnimal = EditDetailsAnimal.getText().toString();
+
+                    Bundle extras = getIntent().getExtras();
+                    if (extras != null) {
+                        String Latitud = String.valueOf(extras.getDouble("Latitud"));
+                        String Longitud = String.valueOf(extras.getDouble("Longitud"));
+                        String idFacebook = extras.getString("idFacebook");
+
+                        //EL id new animal, sera el proporcionado por el spinnner!
+                        Log.e("Data! = ",detallesAnimal+"-"+Latitud+"-"+Longitud+"-"+idFacebook);
+                        new UpdateDetallesAnimal().execute(detallesAnimal,Latitud,Longitud, idFacebook);
+
+                    }
+                    Intent myIntent = new Intent(v.getContext(), MapsActivity.class);
+                    startActivity(myIntent);
+
+
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Ingresa Detalles Animal", Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+
+
+           }
+
+
+        });
+
     }
+
+
+
+
+    @Override
+    public void onClick(View v) {
+        if (v == buttonChoose) {
+            showFileChooser();
+        }
+        if(v == buttonUpload){
+
+                uploadImage();
+
+
+        }
+
+    }
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            filePath = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+    private void uploadImage(){
+        class UploadImage extends AsyncTask<Bitmap,Void,String>{
+
+            ProgressDialog loading;
+            RequestHandler rh = new RequestHandler();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(EditAnimalActivity.this, "Uploading Image", "Please wait...",true,true);
+
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                Bundle extras = getIntent().getExtras();
+                if (extras != null) {
+                    String Latitud = String.valueOf(extras.getDouble("Latitud"));
+                    String Longitud = String.valueOf(extras.getDouble("Longitud"));
+                    String idFacebook = extras.getString("idFacebook");
+                    Bitmap bitmap = params[0];
+                    String uploadImage = getStringImage(bitmap);
+
+                    HashMap<String,String> data = new HashMap<>();
+
+                    data.put(UPLOAD_KEY, uploadImage);
+                    data.put(LATITUD,Latitud);
+                    data.put(LONGITUD,Longitud);
+                    data.put(IDFACEBOOK,idFacebook);
+                    
+
+
+                    Log.e("Upload link = ",UPLOAD_URL);
+                    Log.e("data = ",Latitud+"-"+Longitud+"-"+data.get(idFacebook));
+
+                    String result = rh.sendPostRequest(UPLOAD_URL,data);
+
+                    Log.e("Upload result = ",result);
+
+                    return result;
+
+                }
+
+
+
+                return null;
+            }
+        }
+
+        UploadImage ui = new UploadImage();
+        ui.execute(bitmap);
+
+    }
+
+
+
+
 
 
     private class GetAnimals extends AsyncTask<Void, Void, Void> {
@@ -382,6 +580,91 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
+    }
+
+
+    private class UpdateDetallesAnimal extends AsyncTask<String, Void, Void> {
+
+        boolean isUpdateAnimal = false;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(EditAnimalActivity.this);
+            pDialog.setMessage("Actualizando Detalles Animal..");
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(String... arg) {
+
+            String detallesAnimal = arg[0];
+            String  Latitud = arg[1];
+            String Longitud = arg[2];
+            String idFacebook = arg[3];
+
+            // Preparing post params
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("detallesAnimal", detallesAnimal));
+            params.add(new BasicNameValuePair("Latitud",Latitud));
+            params.add(new BasicNameValuePair("Longitud",Longitud));
+            params.add(new BasicNameValuePair("idFacebook",idFacebook));
+
+            ServiceHandler serviceClient = new ServiceHandler();
+
+            Log.e("LINK UPDATE = ",URL_UPDATE_DETALLES_ANIMAL);
+            Log.e("Data link! = ",detallesAnimal+"-"+Latitud+"-"+Longitud+"-"+idFacebook)
+            ;
+            String json = serviceClient.makeServiceCall(URL_UPDATE_DETALLES_ANIMAL,
+                    ServiceHandler.POST, params);
+
+            Log.e("UpdateDetallesAnimal: ", "> " + json);
+
+            if (json != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(json);
+                    boolean error = jsonObj.getBoolean("error");
+                    // checking for error node in json
+                    if (!error) {
+                        // new category created successfully
+                        isUpdateAnimal = true;
+
+                    } else {
+                        Log.e("UpDetailsAnimalError:", "> " + jsonObj.getString("message"));
+                        Log.e("Query ",jsonObj.getString("query"));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.e("JSON Data", "Didn't receive any data from server!");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if (isUpdateAnimal) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // fetching all categories
+                        //new GetAnimals().execute();
+
+                    }
+                });
+            }
+
+        }
+
     }
 
 

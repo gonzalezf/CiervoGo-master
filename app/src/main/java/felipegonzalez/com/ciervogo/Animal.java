@@ -5,6 +5,7 @@ package felipegonzalez.com.ciervogo;
  */
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,35 +16,54 @@ import java.util.ArrayList;
 
 public class Animal {
     //Esto se hizo para mostrar los ultimos 5 animales!
-    public String title;
-    public String description;
-    public String imageUrl;
-    public String instructionUrl;
-    public String label;
+    public String nombreAnimal;
+    public String descripcionAnimal;
+    public String linkFotoAnimal;
+    public String extincionAnimal;
 
-    public static ArrayList<Animal> getRecipesFromFile(String filename, Context context){
+
+    public static ArrayList<Animal> getRecipesFromFile(String username, Context context){
         final ArrayList<Animal> AnimalList = new ArrayList<>();
+        ///String link = "http://192.168.50.11/pokedex.php?username="+username;
 
-        try {
-            // Load data
-            String jsonString = loadJsonFromAsset("animal.json", context);
-            JSONObject json = new JSONObject(jsonString);
-            JSONArray animal = json.getJSONArray("animal");
+        String link = "http://nachotp.asuscomm.com:8111/pokedex.php?username="+username;
 
-            // Get Recipe objects from data
-            for(int i = 0; i < animal.length(); i++){
-                Animal recipe = new Animal();
 
-                recipe.title = animal.getJSONObject(i).getString("title");
-                recipe.description = animal.getJSONObject(i).getString("description");
-                recipe.imageUrl = animal.getJSONObject(i).getString("image");
-                recipe.instructionUrl = animal.getJSONObject(i).getString("url");
-                recipe.label = animal.getJSONObject(i).getString("dietLabel");
+        //String jsonString = loadJsonFromAsset("animal.json", context);
 
-                AnimalList.add(recipe);
+        ServiceHandler jsonParser = new ServiceHandler();
+        String json = jsonParser.makeServiceCall(link, ServiceHandler.GET);
+
+        Log.e("pokedex : ", "> " + link);
+
+        if (json != null){
+            try{
+                JSONObject jsonObj = new JSONObject(json);
+                if (jsonObj != null) {
+
+                    JSONArray animal = jsonObj.getJSONArray("animales");
+                    // Get Recipe objects from data
+                    for(int i = 0; i < animal.length(); i++){
+                        Animal recipe = new Animal();
+
+                        recipe.nombreAnimal = animal.getJSONObject(i).getString("nombreAnimal");
+                        recipe.descripcionAnimal= animal.getJSONObject(i).getString("descripcionAnimal");
+                        recipe.linkFotoAnimal = animal.getJSONObject(i).getString("linkFotoAnimal");
+                        recipe.extincionAnimal = animal.getJSONObject(i).getString("extincionAnimal");
+
+                        AnimalList.add(recipe);
+                    }
+
+                }
+
+
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        else {
+            Log.e("JSON Data", "Didn't receive any data from server!");
         }
 
         return AnimalList;

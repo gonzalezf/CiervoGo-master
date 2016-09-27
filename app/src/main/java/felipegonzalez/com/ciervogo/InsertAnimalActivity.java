@@ -49,7 +49,7 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
                 String longitude = (String) arg0[3];
 
 
-                String link = "http://192.168.50.11/insertDeteccion.php?username="+username+"&idAnimal="+idAnimal+"&latitude="+latitude+"&longitude="+longitude;
+                String link = "http://nachotp.asuscomm.com:8111/insertDeteccion.php?username="+username+"&idAnimal="+idAnimal+"&latitude="+latitude+"&longitude="+longitude;
 
                 URL url = new URL(link);
                 HttpClient client = new DefaultHttpClient();
@@ -84,7 +84,7 @@ public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
                 String username = (String) arg0[0];
 
 
-                String link = "http://localhost/insertDeteccion.php";
+                String link = "http://nachotp.asuscomm.com:8111/insertDeteccion.php";
                 String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
 
                 URL url = new URL(link);

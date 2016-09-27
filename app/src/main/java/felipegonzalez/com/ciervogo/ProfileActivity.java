@@ -3,6 +3,7 @@ package felipegonzalez.com.ciervogo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +35,10 @@ public class ProfileActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         Intent intent = getIntent();
 
@@ -54,11 +59,11 @@ public class ProfileActivity extends ActionBarActivity {
             TextView myTextView= (TextView) findViewById(R.id.nameProfile);
             myTextView.setText(name);
             String username = profile.getId();
-            new GetAnimalActivity(this,idAnimalTextView,0).execute(username);
+            //new GetAnimalActivity(this,idAnimalTextView,0).execute(username);
 
             mListView = (ListView) findViewById(R.id.animal_list_view);
 
-            final ArrayList<Animal> animalList = Animal.getRecipesFromFile("animal.json", this);
+            final ArrayList<Animal> animalList = Animal.getRecipesFromFile(username, this);
 
             AnimalAdapter adapter = new AnimalAdapter(this, animalList);
             mListView.setAdapter(adapter);// 2

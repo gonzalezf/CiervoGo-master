@@ -39,6 +39,45 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"/>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Detalles Animal"/>
+
+    <EditText
+        android:id="@+id/EditDetailsAnimal"
+        android:layout_height="wrap_content"
+        android:hint="Ingresar detalles animal"
+        android:layout_width="fill_parent">
+    </EditText>
+
+    <Button android:id="@+id/btnUpdateDetallesAnimal"
+        android:text="Actualizar Detalles"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"/>
+
+
+    <Button android:id="@+id/btnChooseImage"
+        android:text="Elegir Imagen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"/>
+    <Button android:id="@+id/btnUploadImage"
+        android:text="Subir Imagen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"/>
+    <Button android:id="@+id/btnSeeImage"
+        android:text="Ver imagen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/imageView" />
 
 
 
