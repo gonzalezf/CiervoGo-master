@@ -43,7 +43,7 @@ public class ProfileActivity extends ActionBarActivity {
         Intent intent = getIntent();
 
         String birthdayDate = intent.getStringExtra("user.birthdayDate");
-        idAnimalTextView = (TextView)findViewById(R.id.textView5);
+        //idAnimalTextView = (TextView)findViewById(R.id.textView5);
 
 
         FacebookSdk.sdkInitialize(getApplicationContext());

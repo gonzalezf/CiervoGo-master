@@ -37,6 +37,8 @@ public class Animal {
         Log.e("pokedex : ", "> " + link);
 
         if (json != null){
+            Log.e("json = ",json);
+
             try{
                 JSONObject jsonObj = new JSONObject(json);
                 if (jsonObj != null) {
