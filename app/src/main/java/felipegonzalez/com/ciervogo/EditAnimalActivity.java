@@ -24,6 +24,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -506,7 +507,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             String  Latitud = arg[1];
             String Longitud = arg[2];
             String idFacebook = arg[3];
-
+            Log.e("LLEGO F UP",Latitud+"-"+Longitud);
             // Preparing post params
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("idAnimal", newAnimal));
@@ -592,10 +593,12 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             pDialog.setCancelable(true);
             pDialog.show();
 
+
         }
 
         @Override
         protected Void doInBackground(String... arg) {
+
 
             String detallesAnimal = arg[0];
             String  Latitud = arg[1];

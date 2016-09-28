@@ -85,19 +85,10 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         FacebookSdk.sdkInitialize(getApplicationContext());
         mLocationProvider = new LocationProvider(this, this); //Llamada a API para detectar ubicación.
 
-
-
-
-
-
         if(!isLoggedIn()){
             Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
             startActivity(intent);
-
         }
-
-
-
 
     }
 
@@ -156,11 +147,30 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                     Profile profile = Profile.getCurrentProfile();
                     String username = profile.getId();
                     intent.putExtra("idFacebook",username);
+                    Log.e("Mandar a edit ",String.valueOf(Latitud));
 
 
                     startActivity(intent);
 
                 }
+                else{
+                    Intent intent = new Intent(MapsActivity.this,ShowAnimalActivity.class);
+
+                    //Mandar datos a la siguiente actividad..
+
+                    Double Latitud = marker.getPosition().latitude;
+                    Double Longitud = marker.getPosition().longitude;
+                    intent.putExtra("Longitud",Longitud);
+                    intent.putExtra("Latitud",Latitud);
+                    Profile profile = Profile.getCurrentProfile();
+                    String username = profile.getId();
+                    intent.putExtra("idFacebook",username);
+                    intent.putExtra("nombreAnimal",marker.getTitle());
+                    Log.e("Mandar a show ",String.valueOf(Latitud));
+
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -182,6 +192,9 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
+
+
+
             if (mMap != null) {
                 setUpMap();
             }
@@ -318,7 +331,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             //Llenar de marcadores desde la base de datos
             for (int i = 0; i < deteccionList.size(); i++) {
                 Deteccion obj = deteccionList.get(i);
-                mMap.addMarker(new MarkerOptions().position(new LatLng(obj.getLatitud(), obj.getLongitud())).title(getNameAnimal(obj.getIdAnimal())));
+                marker = mMap.addMarker(new MarkerOptions().position(new LatLng(obj.getLatitud(), obj.getLongitud())).title(getNameAnimal(obj.getIdAnimal())));
 
             }
 

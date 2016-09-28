@@ -7,8 +7,10 @@ public class Deteccion {
     private  int idDeteccion;
     private int idFacebook;
     private int idAnimal;
-    private float Latitud;
-    private float Longitud;
+    private double Latitud;
+    private double Longitud;
+    private String image;
+    private String detalleAnimal;
 
     public Deteccion(){}
 
@@ -34,6 +36,11 @@ public class Deteccion {
     public void setLongitud(float Longitud){
         this.Longitud = Longitud;
     }
+    public void setImage(String image){this.image = image;}
+    public void setDetalleAnimal(String detalleAnimal){this.detalleAnimal=detalleAnimal;}
+
+    public String getImage(){return this.image;}
+    public String getDetalleAnimal(){return this.detalleAnimal;}
     public int getIdDeteccion(){
         return this.idDeteccion;
     }
@@ -43,10 +50,10 @@ public class Deteccion {
     public int getIdAnimal(){
         return this.idAnimal;
     }
-    public float getLatitud(){
+    public double getLatitud(){
         return this.Latitud;
     }
-    public float getLongitud(){
+    public double getLongitud(){
         return this.Longitud;
     }
 

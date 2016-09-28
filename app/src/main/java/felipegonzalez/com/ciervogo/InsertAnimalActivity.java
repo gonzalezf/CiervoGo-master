@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 
 public class InsertAnimalActivity extends AsyncTask<String, Void, String> {
 
+    public InsertAnimalActivity(){}
 
     private TextView idAnimalTextView;
     private Context context;

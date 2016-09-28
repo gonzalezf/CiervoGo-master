@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 public class GetAnimalActivity extends AsyncTask<String, Void, String> {
 
+        public  GetAnimalActivity(){}
 
         private TextView  idAnimalTextView;
         private Context context;

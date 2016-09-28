@@ -62,7 +62,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".GetAnimalActivity" />
         <activity android:name=".InsertAnimalActivity" />
-        <activity android:name=".EditAnimalActivity"></activity>
+        <activity android:name=".EditAnimalActivity" />
+        <activity android:name=".ShowAnimalActivity"></activity>
     </application>
 
 </manifest>

@@ -88,4 +88,27 @@ public class Animal {
         return json;
     }
 
+    public void setNombreAnimal(String nombreAnimal){
+        this.nombreAnimal = nombreAnimal;
+    }
+
+    public void setDescripcionAnimal(String descripcionAnimal){
+        this.descripcionAnimal = descripcionAnimal;
+    }
+    public void setExtincionAnimal(String extincionAnimal){
+        this.extincionAnimal = extincionAnimal;
+    }
+
+    public String getNombreAnimal(){
+        return this.nombreAnimal;
+    }
+
+    public String getDescripcionAnimal(){
+        return this.descripcionAnimal;
+    }
+
+    public String getExtincionAnimal(){
+        return this.extincionAnimal;
+    }
+
 }
