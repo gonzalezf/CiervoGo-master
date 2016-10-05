@@ -62,6 +62,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
     public static final String LATITUD = "Latitud";
     public static final String LONGITUD = "Longitud";
     public static final String IDFACEBOOK = "idFacebook";
+    public static  final String IDDETECCION = "idDeteccion";
 
     public static final String TAG = "MY MESSAGE";
 
@@ -144,9 +145,10 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     String Latitud = String.valueOf(extras.getDouble("Latitud"));
                     String Longitud = String.valueOf(extras.getDouble("Longitud"));
                     String idFacebook = extras.getString("idFacebook");
+                    String idDeteccion = extras.getString("idDeteccion");
 
                     //EL id new animal, sera el proporcionado por el spinnner!
-                    new UpdateAnimal().execute(idnewAnimal,Latitud,Longitud, idFacebook);
+                    new UpdateAnimal().execute(idnewAnimal,Latitud,Longitud, idFacebook,idDeteccion);
 
                 }
                 Intent myIntent = new Intent(v.getContext(), MapsActivity.class);
@@ -172,10 +174,11 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                         String Latitud = String.valueOf(extras.getDouble("Latitud"));
                         String Longitud = String.valueOf(extras.getDouble("Longitud"));
                         String idFacebook = extras.getString("idFacebook");
+                        String idDeteccion = extras.getString("idDeteccion");
 
                         //EL id new animal, sera el proporcionado por el spinnner!
                         Log.e("Data upde = ",detallesAnimal+"-"+Latitud+"-"+Longitud+"-"+idFacebook);
-                        new UpdateDetallesAnimal().execute(detallesAnimal,Latitud,Longitud, idFacebook);
+                        new UpdateDetallesAnimal().execute(detallesAnimal,Latitud,Longitud, idFacebook,idDeteccion);
 
                     }
                     Intent myIntent = new Intent(v.getContext(), MapsActivity.class);
@@ -254,7 +257,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(EditAnimalActivity.this, "Uploading Image", "Please wait...",true,true);
+                loading = ProgressDialog.show(EditAnimalActivity.this, "Subiendo imagen", "Por favor espera",true,true);
 
             }
 
@@ -275,6 +278,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     String Latitud = String.valueOf(extras.getDouble("Latitud"));
                     String Longitud = String.valueOf(extras.getDouble("Longitud"));
                     String idFacebook = extras.getString("idFacebook");
+                    String idDeteccion = extras.getString("idDeteccion");
                     Bitmap bitmap = params[0];
                     String uploadImage = getStringImage(bitmap);
 
@@ -284,7 +288,8 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     data.put(LATITUD,Latitud);
                     data.put(LONGITUD,Longitud);
                     data.put(IDFACEBOOK,idFacebook);
-                    
+                    data.put(IDDETECCION,idDeteccion);
+
 
 
                     //Log.e("data = ",data.get(UPLOAD_KEY)+"-"+data.get(IDFACEBOOK));
@@ -472,8 +477,10 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                             String Latitud = String.valueOf(extras.getDouble("Latitud"));
                             String Longitud = String.valueOf(extras.getDouble("Longitud"));
                             String idFacebook = extras.getString("idFacebook");
+                            String idDeteccion = extras.getString("idDeteccion");
+
                             Log.e("VAR=",String.valueOf(idnewAnimal)+"="+Latitud+"="+Longitud+"="+idFacebook);
-                            new UpdateAnimal().execute(String.valueOf(idnewAnimal),Latitud,Longitud, idFacebook);
+                            new UpdateAnimal().execute(String.valueOf(idnewAnimal),Latitud,Longitud, idFacebook,idDeteccion);
 
                         }
 
@@ -507,13 +514,16 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             String  Latitud = arg[1];
             String Longitud = arg[2];
             String idFacebook = arg[3];
-            Log.e("LLEGO F UP",Latitud+"-"+Longitud);
+            String idDeteccion = arg[4];
+
+            Log.e("LLEGO id detec",idDeteccion+"-"+Longitud);
             // Preparing post params
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("idAnimal", newAnimal));
             params.add(new BasicNameValuePair("Latitud",Latitud));
             params.add(new BasicNameValuePair("Longitud",Longitud));
             params.add(new BasicNameValuePair("idFacebook",idFacebook));
+            params.add(new BasicNameValuePair("idDeteccion",idDeteccion));
 
             ServiceHandler serviceClient = new ServiceHandler();
 
@@ -604,6 +614,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             String  Latitud = arg[1];
             String Longitud = arg[2];
             String idFacebook = arg[3];
+            String idDeteccion = arg[4];
 
             // Preparing post params
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -611,6 +622,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
             params.add(new BasicNameValuePair("Latitud",Latitud));
             params.add(new BasicNameValuePair("Longitud",Longitud));
             params.add(new BasicNameValuePair("idFacebook",idFacebook));
+            params.add(new BasicNameValuePair("idDeteccion",idDeteccion));
 
             ServiceHandler serviceClient = new ServiceHandler();
 

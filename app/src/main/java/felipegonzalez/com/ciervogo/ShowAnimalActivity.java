@@ -82,10 +82,12 @@ public class ShowAnimalActivity extends Activity {
                     String Latitud = String.valueOf(extras.getDouble("Latitud"));
                     String Longitud = String.valueOf(extras.getDouble("Longitud"));
                     String idFacebook = extras.getString("idFacebook");
+                    String idDeteccion =  extras.getString("idDeteccion");
                     Intent myIntent = new Intent(v.getContext(), EditAnimalActivity.class);
                     myIntent.putExtra("Latitud", Latitud);
                     myIntent.putExtra("Longitud", Longitud);
                     myIntent.putExtra("idFacebook", idFacebook); //Ojo! hacer control, que pasa si no recibe nada, app se cae
+                    myIntent.putExtra("idDeteccion",idDeteccion);
 
                     startActivity(myIntent); //Creo que hay que pasar los datos de las variable
                 }
@@ -98,8 +100,9 @@ public class ShowAnimalActivity extends Activity {
             String nombreAnimal = extras.getString("nombreAnimal");
             String Latitud = String.valueOf(extras.getDouble("Latitud"));
             String Longitud = String.valueOf(extras.getDouble("Longitud"));
-            Log.e("Mandar llegado ",Latitud);
-            new GetInfoAnimal().execute(nombreAnimal,Latitud,Longitud);
+            String idDeteccion = extras.getString("idDeteccion");
+            Log.e("Mandar llegado ", idDeteccion);
+            new GetInfoAnimal().execute(nombreAnimal,Latitud,Longitud,idDeteccion);
 
         }
 
@@ -130,8 +133,9 @@ public class ShowAnimalActivity extends Activity {
             String nombreAnimal = arg[0];
             String Latitud = arg[1];
             String Longitud = arg[2];
+            String idDeteccion = arg[3];
 
-            Log.e("VALORES PARAMS = ",String.valueOf(Latitud)+"-"+String.valueOf(Longitud));
+            Log.e("VALORES PARAMS = ",String.valueOf(idDeteccion)+"-"+String.valueOf(Longitud));
 
 
             // Preparing post params
@@ -139,6 +143,7 @@ public class ShowAnimalActivity extends Activity {
             params.add(new BasicNameValuePair("nombreAnimal", nombreAnimal));
             params.add(new BasicNameValuePair("Latitud", Latitud));
             params.add(new BasicNameValuePair("Longitud", Longitud));
+            params.add(new BasicNameValuePair("idDeteccion",idDeteccion));
 
 
             ServiceHandler serviceClient = new ServiceHandler();
@@ -198,10 +203,11 @@ public class ShowAnimalActivity extends Activity {
                 txtDetallesAnimalView.setText(deteccion.getDetalleAnimal());
                 //imageView.setImageBitmap(createImage(300,300,000000,  deteccion.getImage()));
 
-                byte[] decodedString = Base64.decode(deteccion.getImage(), Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                imageView.setImageBitmap(decodedByte);
-
+                if(deteccion.getImage() != null){
+                    byte[] decodedString = Base64.decode(deteccion.getImage(), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    imageView.setImageBitmap(decodedByte);
+                }
 
             }
 

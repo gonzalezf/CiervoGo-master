@@ -45,6 +45,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
 
@@ -61,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
     private LocationProvider mLocationProvider;
     public int durationToast = Toast.LENGTH_SHORT;
+    private HashMap<Marker,String > idDeteccionHashMap;
+
 
     private Marker marker = null;
     private SharedPreferences prefs = null;
@@ -71,6 +74,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     private ArrayList<Deteccion> deteccionList;
     private ProgressDialog pDialog;
     public ArrayList<Animales> animalList;
+    public int LastId=0;
+
 
 
     @Override
@@ -114,6 +119,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             @Override
             public void onMapClick(LatLng point) {
                 marker = mMap.addMarker(new MarkerOptions().position(point).draggable(true).title("Editar"));
+                LastId = LastId+1;
+                idDeteccionHashMap.put(marker,String.valueOf(LastId));
 
                 /* This code will save your location coordinates in SharedPrefrence when you click on the map and later you use it  */
                 String Latitude = String.valueOf(point.latitude);
@@ -147,7 +154,9 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                     Profile profile = Profile.getCurrentProfile();
                     String username = profile.getId();
                     intent.putExtra("idFacebook",username);
-                    Log.e("Mandar a edit ",String.valueOf(Latitud));
+                    String idDeteccion = idDeteccionHashMap.get(marker);
+                    intent.putExtra("idDeteccion",idDeteccion);
+                    Log.e("Mandar a edit ",idDeteccion);
 
 
                     startActivity(intent);
@@ -157,7 +166,6 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                     Intent intent = new Intent(MapsActivity.this,ShowAnimalActivity.class);
 
                     //Mandar datos a la siguiente actividad..
-
                     Double Latitud = marker.getPosition().latitude;
                     Double Longitud = marker.getPosition().longitude;
                     intent.putExtra("Longitud",Longitud);
@@ -167,6 +175,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                     intent.putExtra("idFacebook",username);
                     intent.putExtra("nombreAnimal",marker.getTitle());
                     Log.e("Mandar a show ",String.valueOf(Latitud));
+                    Log.e("ID DETECCION == ",idDeteccionHashMap.get(marker));
+                    intent.putExtra("idDeteccion",idDeteccionHashMap.get(marker));
 
                     startActivity(intent);
                 }
@@ -253,6 +263,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
 
 
+
                             deteccionList.add(cat); //cat es un objeto deteccion y deteccionList alberga todas las detecciones
 
                         }
@@ -324,6 +335,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
 
         @Override
         protected void onPostExecute(Void result) {
+            idDeteccionHashMap = new HashMap<Marker, String>();
+
             super.onPostExecute(result);
             if (pDialog.isShowing())
                 pDialog.dismiss();
@@ -332,6 +345,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             for (int i = 0; i < deteccionList.size(); i++) {
                 Deteccion obj = deteccionList.get(i);
                 marker = mMap.addMarker(new MarkerOptions().position(new LatLng(obj.getLatitud(), obj.getLongitud())).title(getNameAnimal(obj.getIdAnimal())));
+                idDeteccionHashMap.put(marker,String.valueOf(obj.getIdDeteccion()));
+                LastId = obj.getIdDeteccion(); //quedara con el ultimo valor agregado
 
             }
 
