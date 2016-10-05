@@ -41,12 +41,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="CiervoGo">
         </activity>
         <activity android:name=".ProfileActivity" />
         <activity
@@ -63,7 +58,14 @@
         <activity android:name=".GetAnimalActivity" />
         <activity android:name=".InsertAnimalActivity" />
         <activity android:name=".EditAnimalActivity" />
-        <activity android:name=".ShowAnimalActivity"></activity>
+        <activity android:name=".ShowAnimalActivity" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
