@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -142,7 +146,7 @@ public class ShowAnimalActivity extends Activity {
             String json = serviceClient.makeServiceCall(link,
                     ServiceHandler.POST, params);
 
-            Log.e("Info Animal : ", "> " + json);
+            Log.e("Json Animal Show : ", "> " + json);
 
             if (json != null) {
                 try {
@@ -150,7 +154,6 @@ public class ShowAnimalActivity extends Activity {
                     if (jsonObj != null) {
                         JSONArray animals = jsonObj
                                 .getJSONArray("animales");
-                        Log.e("llega","array1");
 
 
                         JSONObject catObj = (JSONObject) animals.get(0);
@@ -158,6 +161,7 @@ public class ShowAnimalActivity extends Activity {
                                 String txtNombreAnimal = catObj.getString("nombreAnimal");
                                 String txtExtincionAnimal = catObj.getString("extincionAnimal");
                                 String txtDescripcionAnimal = catObj.getString("descripcionAnimal");
+
                                 String txtDetallesAnimal = catObj.getString("detallesAnimal");
                                 String image = catObj.getString("image");
 
@@ -166,7 +170,8 @@ public class ShowAnimalActivity extends Activity {
                                 animal.setExtincionAnimal(txtExtincionAnimal);
                                 deteccion.setDetalleAnimal(txtDetallesAnimal);
                                 deteccion.setImage(image);
-                                Log.e("llega","array2");
+
+
 
                         }
                     } catch (JSONException e) {
@@ -188,11 +193,15 @@ public class ShowAnimalActivity extends Activity {
                 txtNombreAnimalView.setText(animal.getNombreAnimal());
                 txtDescripcionAnimalView.setText(animal.getDescripcionAnimal());
                 txtExtincionAnimalView.setText(animal.getExtincionAnimal());
-                Log.e("llega","post");
             }
             if(deteccion !=null){
                 txtDetallesAnimalView.setText(deteccion.getDetalleAnimal());
-                Log.e("llega","post2");
+                //imageView.setImageBitmap(createImage(300,300,000000,  deteccion.getImage()));
+
+                byte[] decodedString = Base64.decode(deteccion.getImage(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                imageView.setImageBitmap(decodedByte);
+
 
             }
 
@@ -202,6 +211,19 @@ public class ShowAnimalActivity extends Activity {
                 pDialog.dismiss();
         }
 
+    }
+    public Bitmap createImage(int width, int height, int color, String name) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint2 = new Paint();
+        paint2.setColor(color);
+        canvas.drawRect(0F, 0F, (float) width, (float) height, paint2);
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(72);
+        paint.setTextScaleX(1);
+        canvas.drawText(name, 75 - 25, 75 + 20, paint);
+        return bitmap;
     }
 
 }
