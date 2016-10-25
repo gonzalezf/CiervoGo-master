@@ -20,6 +20,7 @@ import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -94,6 +95,8 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
             startActivity(intent);
         }
+
+
 
     }
 
@@ -386,10 +389,23 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         startActivity(intent);
     }
 
+    public void getExplorer(View view)
+    {
+        Intent intent = new Intent(MapsActivity.this, ExplorerActivity.class);
+        startActivity(intent);
+    }
+
     public void getLogin(View view)
     {
         Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public void getOptionsMenu(View view)
+    {
+        Intent intent = new Intent(MapsActivity.this, OptionsMenu.class);
+        startActivity(intent);
+    }
+
 
 }

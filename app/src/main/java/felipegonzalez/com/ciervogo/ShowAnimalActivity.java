@@ -207,6 +207,7 @@ public class ShowAnimalActivity extends Activity {
                     byte[] decodedString = Base64.decode(deteccion.getImage(), Base64.DEFAULT);
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     imageView.setImageBitmap(decodedByte);
+                    Log.e("IMG 64 ","LLEGO A DECODIFICAR");
                 }
 
             }
@@ -218,18 +219,6 @@ public class ShowAnimalActivity extends Activity {
         }
 
     }
-    public Bitmap createImage(int width, int height, int color, String name) {
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint2 = new Paint();
-        paint2.setColor(color);
-        canvas.drawRect(0F, 0F, (float) width, (float) height, paint2);
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(72);
-        paint.setTextScaleX(1);
-        canvas.drawText(name, 75 - 25, 75 + 20, paint);
-        return bitmap;
-    }
+
 
 }

@@ -281,6 +281,7 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     String idDeteccion = extras.getString("idDeteccion");
                     Bitmap bitmap = params[0];
                     String uploadImage = getStringImage(bitmap);
+                    Log.e("IMAGEN 64 ",uploadImage);
 
                     HashMap<String,String> data = new HashMap<>();
 
@@ -290,9 +291,6 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                     data.put(IDFACEBOOK,idFacebook);
                     data.put(IDDETECCION,idDeteccion);
 
-
-
-                    //Log.e("data = ",data.get(UPLOAD_KEY)+"-"+data.get(IDFACEBOOK));
 
                     String result = rh.sendPostRequest(UPLOAD_URL,data);
 

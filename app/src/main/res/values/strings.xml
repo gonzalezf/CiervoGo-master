@@ -32,4 +32,6 @@
     <!--String Edit ANimal -->
     <string name="buttonConfirm"> Guardar Cambios</string>
     <string name="nameAnimalHint"> Nombre Animal</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

@@ -27,4 +27,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.androidmapsextensions:android-maps-extensions:2.2.0'
+    compile 'com.getbase:floatingactionbutton:1.9.1'
+
 }

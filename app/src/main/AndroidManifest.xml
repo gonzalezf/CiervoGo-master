@@ -41,8 +41,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="CiervoGo">
-        </activity>
+            android:label="CiervoGo" />
         <activity android:name=".ProfileActivity" />
         <activity
             android:name=".SearchActivity"
@@ -66,6 +65,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ExplorerActivity" />
+        <activity android:name=".OptionsMenu"></activity>
     </application>
 
 </manifest>
