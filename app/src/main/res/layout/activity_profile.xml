@@ -27,6 +27,28 @@
         android:textSize="19dp"
         />
 
+
+
+    <ProgressBar
+
+        android:id="@+id/progressbarPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minWidth="200dip"
+        android:max="8000"
+        style="?android:attr/progressBarStyleHorizontal"/>
+
+    <TextView
+
+        android:id="@+id/textfieldPoints"
+        android:layout_marginTop="40dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
@@ -34,9 +56,6 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
         />
-
-
-
 
 
     <ListView

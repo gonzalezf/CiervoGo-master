@@ -69,7 +69,7 @@ public class ShowAnimalActivity extends Activity {
         txtDetallesAnimalView = (TextView) findViewById(R.id.txtDetallesAnimal);
 
         btnEditAnimal = (Button) findViewById(R.id.btnEditAnimal);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.imageViewShowAnimal);
 
 
         // Add new category click event
@@ -105,8 +105,6 @@ public class ShowAnimalActivity extends Activity {
             new GetInfoAnimal().execute(nombreAnimal,Latitud,Longitud,idDeteccion);
 
         }
-
-
     }
 
 

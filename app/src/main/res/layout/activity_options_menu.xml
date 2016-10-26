@@ -36,6 +36,15 @@
     android:onClick="getExplorer"
     />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Checkear Detecciones"
+        android:textSize="20dp"
+        android:padding="15dp"
+        android:onClick="checkDetection"
+        />
+
 
 
 </LinearLayout>

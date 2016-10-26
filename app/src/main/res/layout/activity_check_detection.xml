@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_gravity="center"
+android:gravity="center"
+android:orientation="vertical"
+tools:context="felipegonzalez.com.ciervogo.CheckDetection">
+
+    <TextView
+        android:id="@+id/textviewAnimal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+<ImageView
+    android:id="@+id/imageViewCheckAnimal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight=".5"></ImageView>
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/FalseAnimalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No"></Button>
+    <Button
+        android:id="@+id/UnknownAnimalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No lo sé"></Button>
+    <Button
+        android:id="@+id/TrueAnimalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SI"></Button>
+
+</LinearLayout>
+
+
+</LinearLayout>

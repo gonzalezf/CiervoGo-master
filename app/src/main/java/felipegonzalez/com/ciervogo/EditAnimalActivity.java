@@ -58,11 +58,6 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
     //Subir Imagen
 
     public static final String UPLOAD_URL = "http://nachotp.asuscomm.com:8111/uploadImage.php";
-    public static final String UPLOAD_KEY = "image";
-    public static final String LATITUD = "Latitud";
-    public static final String LONGITUD = "Longitud";
-    public static final String IDFACEBOOK = "idFacebook";
-    public static  final String IDDETECCION = "idDeteccion";
 
     public static final String TAG = "MY MESSAGE";
 
@@ -84,13 +79,9 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
         buttonChoose = (Button) findViewById(R.id.btnChooseImage);
         buttonUpload = (Button) findViewById(R.id.btnUploadImage);
-
-        imageView = (ImageView) findViewById(R.id.imageView);
-
+        imageView = (ImageView) findViewById(R.id.imageViewEditAnimal);
         buttonChoose.setOnClickListener(this);
         buttonUpload.setOnClickListener(this);
-
-
         btnAddNewAnimal = (Button) findViewById(R.id.btnAddNewAnimal);
         btnUpdateAnimal = (Button) findViewById(R.id.btnUpdateAnimal);
         btnUpdateDetallesAnimal = (Button) findViewById(R.id.btnUpdateDetallesAnimal);
@@ -99,7 +90,6 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
         txtAnimal = (TextView) findViewById(R.id.txtAnimal);
 
         EditDetailsAnimal = (TextView) findViewById(R.id.EditDetailsAnimal);
-
 
         animalList = new ArrayList<Animales>();
 
@@ -268,16 +258,13 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
                 Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show(); //Error debe ser mostrado, mensaje de confirmacion igual
                 //retorna 0 si too sale bien o  error registering si se equivoco , lo obtiene de la otra funcion
 
-
             }
 
             @Override
             protected String doInBackground(Bitmap... params) {
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
-                    String Latitud = String.valueOf(extras.getDouble("Latitud"));
-                    String Longitud = String.valueOf(extras.getDouble("Longitud"));
-                    String idFacebook = extras.getString("idFacebook");
+
                     String idDeteccion = extras.getString("idDeteccion");
                     Bitmap bitmap = params[0];
                     String uploadImage = getStringImage(bitmap);
@@ -285,11 +272,8 @@ public class EditAnimalActivity extends Activity implements AdapterView.OnItemSe
 
                     HashMap<String,String> data = new HashMap<>();
 
-                    data.put(UPLOAD_KEY, uploadImage);
-                    data.put(LATITUD,Latitud);
-                    data.put(LONGITUD,Longitud);
-                    data.put(IDFACEBOOK,idFacebook);
-                    data.put(IDDETECCION,idDeteccion);
+                    data.put("image", uploadImage);
+                    data.put("idDeteccion",idDeteccion);
 
 
                     String result = rh.sendPostRequest(UPLOAD_URL,data);

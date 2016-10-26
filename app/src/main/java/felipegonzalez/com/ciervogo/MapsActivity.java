@@ -264,11 +264,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                             Deteccion cat = new Deteccion(catObj.getInt("idDeteccion"),
                                     catObj.getInt("idFacebook"),catObj.getInt("idAnimal"),catObj.getLong("Latitud"),catObj.getLong("Longitud"));
 
-
-
-
                             deteccionList.add(cat); //cat es un objeto deteccion y deteccionList alberga todas las detecciones
-
                         }
                     }
 
@@ -302,10 +298,7 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
                             if (cat2 != null) {
                                 Log.e("es distinto de null","yei!");
                                 animalList.add(cat2);
-
                             }
-
-
                         }
                     }
 
@@ -316,8 +309,6 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             } else {
                 Log.e("JSON Data", "Didn't receive any data from server!");
             }
-
-
             return null;
         }
 

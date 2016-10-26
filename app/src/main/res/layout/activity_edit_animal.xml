@@ -73,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/imageView" />
+            android:id="@+id/imageViewEditAnimal" />
+
         <Button android:id="@+id/btnUploadImage"
             android:text="Subir Foto"
             android:layout_width="fill_parent"

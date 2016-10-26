@@ -26,4 +26,11 @@ public class OptionsMenu extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void checkDetection(View view)
+    {
+        Intent intent = new Intent(OptionsMenu.this, CheckDetection.class);
+        startActivity(intent);
+    }
+
+
 }
