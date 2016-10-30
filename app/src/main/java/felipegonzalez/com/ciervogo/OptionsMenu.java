@@ -32,5 +32,12 @@ public class OptionsMenu extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void getAnimalesInteresantes(View view) //recomendador
+    {
+        //Evaluar animales por primera vez (conocer gustos usuarios)
+        Intent intent = new Intent(OptionsMenu.this, EvaluarAnimales.class);
+        startActivity(intent);
+    }
+
 
 }

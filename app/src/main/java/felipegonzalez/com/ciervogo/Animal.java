@@ -17,10 +17,19 @@ import java.util.ArrayList;
 public class Animal {
     //Esto se hizo para mostrar los ultimos 5 animales!
     public String nombreAnimal;
-    public String descripcionAnimal;
     public String linkFotoAnimal;
     public String extincionAnimal;
+    public String descripcionAnimal;
+    public int idAnimal;
 
+
+    public Animal(int idAnimal,String nombreAnimal, String linkFotoAnimal){
+
+        this.idAnimal = idAnimal;
+        this.nombreAnimal = nombreAnimal;
+        this.linkFotoAnimal = linkFotoAnimal;
+    }
+    public Animal(){}
 
     public static ArrayList<Animal> getRecipesFromFile(String username, Context context){
         final ArrayList<Animal> AnimalList = new ArrayList<>();
@@ -112,5 +121,8 @@ public class Animal {
     public String getExtincionAnimal(){
         return this.extincionAnimal;
     }
+
+    public String getLinkFotoAnimal(){return this.linkFotoAnimal;}
+    public Integer getIdAnimal(){return this.idAnimal;}
 
 }

@@ -10,7 +10,7 @@
             android:id="@+id/buttonProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_explore_black_48dp"
+            android:background="@drawable/ic_settings_black_48dp"
             android:onClick="getOptionsMenu"
             android:layout_gravity="bottom|left"
 
