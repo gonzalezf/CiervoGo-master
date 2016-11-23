@@ -56,7 +56,7 @@ public class EvaluarAnimales extends ActionBarActivity {
         ratingBarRankingAnimal = (RatingBar) findViewById(R.id.ratingbarAnimal);
         final ArrayList<Animal> animalList = GetSomeAnimals(); //LLamada a base de datos, se crea deteccion en bd
         if (animalList == null) {
-            Log.e("Lista Animal", "fail");
+            Log.e("Lista Animal", "No se cargan animales para rankear");
             Intent intent = new Intent(EvaluarAnimales.this, MapsActivity.class);
             startActivity(intent);
         }

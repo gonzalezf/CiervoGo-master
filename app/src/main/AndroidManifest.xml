@@ -69,7 +69,7 @@
         <activity android:name=".OptionsMenu" />
         <activity android:name=".CheckDetection" />
         <activity android:name=".EvaluarAnimales" />
-        <activity android:name=".RecomendadorActivity"></activity>
+        <activity android:name=".RecomendadorActivity" />
     </application>
 
 </manifest>
