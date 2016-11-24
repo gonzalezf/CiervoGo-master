@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpResponse;
