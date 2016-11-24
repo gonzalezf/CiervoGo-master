@@ -28,15 +28,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +55,7 @@ import java.util.List;
  */
 public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {
 
+    private String InsertUser = "http://nachotp.asuscomm.com:8111/insertUser.php";
 
     private TextView info;
     private LoginButton loginButton;
@@ -103,12 +109,14 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                                 + loginResult.getAccessToken().getToken()
                 );
                 */
+                String idFacebook = loginResult.getAccessToken().getUserId();
 
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
+
                                 Log.v("LoginActivity", response.toString());
 
                                 // Application code
@@ -116,6 +124,15 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                                     String email = object.getString("email");
 
                                 } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                try{
+                                    String nombreFacebook = object.getString("name").toString();
+                                    String idFacebook = object.getString("id").toString();
+                                    InsertUser(idFacebook,nombreFacebook);
+
+                                }
+                                catch (JSONException e){
                                     e.printStackTrace();
                                 }
                                 try {
@@ -126,10 +143,12 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                                 }
                             }
                         });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender,birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
+
                 Intent intent = new Intent(LoginActivity.this,MapsActivity.class);
                 startActivity(intent);
 
@@ -285,6 +304,19 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    public void InsertUser(String idFacebook,String nombreFacebook){
+
+        // Preparing post params
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("idFacebook",idFacebook));
+        params.add(new BasicNameValuePair("nombreFacebook",nombreFacebook));
+
+
+        ServiceHandler serviceClient = new ServiceHandler();
+        String json = serviceClient.makeServiceCall(InsertUser,
+                ServiceHandler.POST, params);
     }
 
     @Override

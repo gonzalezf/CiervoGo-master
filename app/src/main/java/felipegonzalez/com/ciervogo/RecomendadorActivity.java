@@ -16,6 +16,9 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +57,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
     private Marker marker = null;
     public int contador = 0;
 
-    public ArrayList<AnimalFavoritoEncontrado> favoritosList =  new ArrayList<AnimalFavoritoEncontrado>();
+    ArrayList<AnimalFavoritoEncontrado> favoritosList = new ArrayList<AnimalFavoritoEncontrado>();
 
 
 
@@ -66,7 +69,8 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         Profile profile = Profile.getCurrentProfile(); //Obtener profile usuario de facebook
         String username = profile.getId();
 //        new GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),username).execute(); //LLamada a base de datos, se crea deteccion en bd
-        favoritosList =  GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),username); //LLamada a base de datos, se crea deteccion en bd
+
+        favoritosList =  GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),username,favoritosList); //LLamada a base de datos, se crea deteccion en bd
         favoritosList = ObtenerAnimalFavoritoPorHistorial(String.valueOf(0.0),String.valueOf(0.0),username,String.valueOf(10000),favoritosList);
         textViewNombreAnimal = (TextView) findViewById(R.id.textviewNombreAnimal);
         textViewDistanciaAnimal = (TextView) findViewById(R.id.textviewDistancia);
@@ -86,6 +90,35 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         if(contador == favoritosList.size()-1){
             buttonNext.setEnabled(false);
         }
+
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/"+username+"/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        Log.e("FACEBOOK",response.getRawResponse());
+                        JSONObject friend = response.getJSONObject();
+
+
+                        try {
+                            JSONArray info = friend.getJSONArray("data");
+                            JSONObject user = info.getJSONObject(0);
+                            Log.e("id fb = ",user.getString("id")); //ID DE NACHO!! OJO, HACER FOR SI SON MAS USERS!
+                            String idFacebookFriend = user.getString("id");
+                            Log.e("HOLI!!!","HOLI");
+                            favoritosList =  GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),idFacebookFriend,favoritosList); //LLamada a base de datos, se crea deteccion en bd
+                            Log.e("FAVORITOS LIST = ",favoritosList.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }
+        ).executeAsync();
 
         textViewNombreAnimal.setText(favoritosList.get(contador).getNombreAnimal());
         textViewDistanciaAnimal.setText("Distancia = "+String.valueOf(favoritosList.get(contador).getDistancia())+" km");
@@ -151,8 +184,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         return accessToken != null;
     }
 
-    public ArrayList<AnimalFavoritoEncontrado> GetDeteccionesCercanas(String Latitud, String Longitud, String Distancia, String idFacebook){
-            ArrayList<AnimalFavoritoEncontrado> favoritosList = new ArrayList<AnimalFavoritoEncontrado>();
+    public ArrayList<AnimalFavoritoEncontrado> GetDeteccionesCercanas(String Latitud, String Longitud, String Distancia, String idFacebook,ArrayList<AnimalFavoritoEncontrado> favoritosList){
 
             Log.e("R - PARAMETROS ",Latitud+Longitud+Distancia+idFacebook);
             // Preparing post params
