@@ -1,5 +1,7 @@
 package felipegonzalez.com.ciervogo;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -30,10 +33,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.facebook.FacebookSdk;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +52,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /*
 
@@ -71,12 +77,49 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
     private int flag = 0;
     private String link = "http://nachotp.asuscomm.com:8111/getAllDeteccion.php";
     private String linkGetAnimal = "http://nachotp.asuscomm.com:8111/getAllAnimal.php";
+    private String getErroneos = "http://nachotp.asuscomm.com:8111/numero_erroneos.php";
 
     private ArrayList<Deteccion> deteccionList;
     private ProgressDialog pDialog;
     public ArrayList<Animales> animalList;
     public int LastId=0;
+    public int numeroErroneos = -1;
 
+    public  int GetNumeroErroneos(String idFacebook){
+
+        // Preparing post params
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+         params.add(new BasicNameValuePair("idFacebook",idFacebook));
+
+        ServiceHandler serviceClient = new ServiceHandler();
+        String json = serviceClient.makeServiceCall(getErroneos,
+                ServiceHandler.POST, params);
+
+        if (json != null) {
+            Log.e("R - ",json);
+            try {
+                JSONObject jsonObj = new JSONObject(json);
+                if (jsonObj != null) {
+                    JSONArray deteccion = jsonObj
+                            .getJSONArray("favorito");
+
+                    for (int i = 0; i < deteccion.length(); i++) {
+                        JSONObject catObj = (JSONObject) deteccion.get(i);
+                        numeroErroneos = catObj.getInt("NUM");
+                        Log.e("NUMERO ERRONEOS",String.valueOf(numeroErroneos));
+                        return numeroErroneos;
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Log.e("JSON Data", "Didn't receive any data from server! - num erroneos");
+        }
+        return -2;
+    }
 
 
     @Override
@@ -87,8 +130,11 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        setUpMapIfNeeded();
         FacebookSdk.sdkInitialize(getApplicationContext());
+
+        /*
+*/
+        setUpMapIfNeeded();
         mLocationProvider = new LocationProvider(this, this); //Llamada a API para detectar ubicación.
 
         if(!isLoggedIn()){
@@ -104,6 +150,27 @@ public class MapsActivity extends FragmentActivity implements LocationProvider.L
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        String longText= "Has sido catalogado como un mal explorador. Considera usar la app con responsabilidad ";
+        Profile profile = Profile.getCurrentProfile(); //Obtener profile usuario de facebook
+        String username = profile.getId();
+        numeroErroneos = GetNumeroErroneos(username);
+        if(numeroErroneos>2){
+            Notification n = new Notification.Builder(this)
+                    .setSmallIcon(R.drawable.mano)
+                    .setContentTitle("HEY!! MAL MUCHACHO")
+                    .setAutoCancel(true)
+                    .setColor(721679)
+                    .setStyle(new Notification.BigTextStyle().bigText(longText)).build();
+
+            NotificationManager notificationManager =    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, n);
+        }
+    }
+
 
     @Override
     protected void onResume() {
