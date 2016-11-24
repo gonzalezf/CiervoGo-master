@@ -3,8 +3,10 @@ package felipegonzalez.com.ciervogo;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -40,7 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecomendadorActivity extends ActionBarActivity implements OnMapReadyCallback{
+public class RecomendadorActivity extends ActionBarActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private String GetFavoritiesAnimals = "http://nachotp.asuscomm.com:8111/selectFavoritiesAnimals.php";
     private String GetAnimalMasBuscado = "http://nachotp.asuscomm.com:8111/getAnimalMasBuscado.php";
@@ -56,6 +62,11 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
     Button buttonBack;
     private Marker marker = null;
     public int contador = 0;
+    GoogleApiClient mGoogleApiClient = null;
+
+    double LatitudActual = 0.0;
+    double LongitudActual = 0.0;
+    int distancia = 10000;
 
     ArrayList<AnimalFavoritoEncontrado> favoritosList = new ArrayList<AnimalFavoritoEncontrado>();
 
@@ -66,12 +77,14 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recomendador2);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Profile profile = Profile.getCurrentProfile(); //Obtener profile usuario de facebook
-        String username = profile.getId();
 //        new GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),username).execute(); //LLamada a base de datos, se crea deteccion en bd
 
-        favoritosList =  GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),username,favoritosList); //LLamada a base de datos, se crea deteccion en bd
-        favoritosList = ObtenerAnimalFavoritoPorHistorial(String.valueOf(0.0),String.valueOf(0.0),username,String.valueOf(10000),favoritosList);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
         textViewNombreAnimal = (TextView) findViewById(R.id.textviewNombreAnimal);
         textViewDistanciaAnimal = (TextView) findViewById(R.id.textviewDistancia);
         imageViewLinkFotoAnimal = (ImageView) findViewById(R.id.imageViewLinkFotoAnimal);
@@ -79,17 +92,36 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         buttonBack = (Button) findViewById(R.id.buttonBack);
 
 
+
+        if (mMap == null) {
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.mapRecomendador);
+
+            mMap = mapFragment.getMap();
+            mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
+            mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
+            mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
+
+
+        }
+
+
+
+
+    }
+
+    protected void Otro(){
+        Profile profile = Profile.getCurrentProfile(); //Obtener profile usuario de facebook
+        String username = profile.getId();
+        favoritosList =  GetDeteccionesCercanas(String.valueOf(LatitudActual),String.valueOf(LongitudActual),String.valueOf(distancia),username,favoritosList); //LLamada a base de datos, se crea deteccion en bd
+        favoritosList = ObtenerAnimalFavoritoPorHistorial(String.valueOf(LatitudActual),String.valueOf(LongitudActual),username,String.valueOf(distancia),favoritosList);
+
         if (favoritosList == null || favoritosList.size()== 0) {
             Log.e("Lista Animal", "No se cargan animales favoritos del user");
             Intent intent = new Intent(RecomendadorActivity.this, MapsActivity.class);
             startActivity(intent);
         }
-        if(contador == 0){
-            buttonBack.setEnabled(false);
-        }
-        if(contador == favoritosList.size()-1){
-            buttonNext.setEnabled(false);
-        }
+
 
 
         new GraphRequest(
@@ -109,7 +141,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
                             Log.e("id fb = ",user.getString("id")); //ID DE NACHO!! OJO, HACER FOR SI SON MAS USERS!
                             String idFacebookFriend = user.getString("id");
                             Log.e("HOLI!!!","HOLI");
-                            favoritosList =  GetDeteccionesCercanas(String.valueOf(0.0),String.valueOf(0.0),String.valueOf(10000),idFacebookFriend,favoritosList); //LLamada a base de datos, se crea deteccion en bd
+                            favoritosList =  GetDeteccionesCercanas(String.valueOf(LatitudActual),String.valueOf(LongitudActual),String.valueOf(distancia),idFacebookFriend,favoritosList); //LLamada a base de datos, se crea deteccion en bd
                             Log.e("FAVORITOS LIST = ",favoritosList.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -120,26 +152,61 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
                 }
         ).executeAsync();
 
+        if(contador == 0){
+            buttonBack.setEnabled(false);
+        }
+        if(contador == favoritosList.size()-1){
+            buttonNext.setEnabled(false);
+        }
         textViewNombreAnimal.setText(favoritosList.get(contador).getNombreAnimal());
         textViewDistanciaAnimal.setText("Distancia = "+String.valueOf(favoritosList.get(contador).getDistancia())+" km");
         Picasso.with(this)
                 .load(favoritosList.get(contador).getLinkFotoAnimal())
                 .into(imageViewLinkFotoAnimal);
         //       setUpMapIfNeeded();
+        setMap(mMap);
 
+    }
+    protected void onStart() {
+        Log.e("U","start");
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.show();
 
-        if (mMap == null) {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.mapRecomendador);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                dialog.dismiss();
+                Otro();
+            }
+        }, 3000); // 3000 milliseconds delay
+        //mGoogleApiClient.connect();
 
-            mMap = mapFragment.getMap();
-            mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
-            mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
-            mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
-            setMap(mMap);
+        super.onStart();
 
+    }
 
+    protected void onStop() {
+        Log.e("U","stop");
+
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+    public void onConnected(Bundle connectionHint) {
+        Log.e("U","onconnected");
+
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            Log.e("Encontrado",String.valueOf(mLastLocation.getLatitude()));
+            LatitudActual = mLastLocation.getLatitude();
+            LongitudActual = mLastLocation.getLongitude();
         }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.e("U","suspended");
+
     }
 
     public void goNext(View view) {
@@ -159,11 +226,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
                 .load(favoritosList.get(contador).getLinkFotoAnimal())
                 .into(imageViewLinkFotoAnimal);
         setMap(mMap);
-
-
-
     }
-
 
     public void goBack(View view) {
         buttonBack.setEnabled(true);
@@ -192,8 +255,8 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
     }
 
     public ArrayList<AnimalFavoritoEncontrado> GetDeteccionesCercanas(String Latitud, String Longitud, String Distancia, String idFacebook,ArrayList<AnimalFavoritoEncontrado> favoritosList){
-
-            Log.e("R - PARAMETROS ",Latitud+Longitud+Distancia+idFacebook);
+            Log.e("Latitud = ",Latitud);
+            Log.e("Longitud = ",Longitud);
             // Preparing post params
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("Latitud",Latitud));
@@ -217,12 +280,6 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
                             JSONObject catObj = (JSONObject) deteccion.get(i);
                             AnimalFavoritoEncontrado cat = new AnimalFavoritoEncontrado(catObj.getString("nombreAnimal"),
                                     catObj.getString("linkFotoAnimal"),catObj.getDouble("distance"),catObj.getDouble("Latitud"),catObj.getDouble("Longitud"));
-
-                            Log.e("1",cat.getLinkFotoAnimal());
-                            Log.e("2",cat.getNombreAnimal());
-                            Log.e("3", String.valueOf(cat.getDistancia()));
-                            Log.e("4", String.valueOf(cat.getLatitud()));
-                            Log.e("5", String.valueOf(cat.getLongitud()));
                             favoritosList.add(cat); //cat es un objeto deteccion y deteccionList alberga todas las detecciones
 
                         }
@@ -240,9 +297,8 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         }
 
     public ArrayList<AnimalFavoritoEncontrado> ObtenerAnimalFavoritoPorHistorial(String Latitud, String Longitud, String idFacebook,String distance, ArrayList<AnimalFavoritoEncontrado> favoritosList){
-
-
-
+        Log.e("Latitud = ",Latitud);
+        Log.e("Longitud = ",Longitud);
         //Obtener ID ANIMAL FAVORITO!
         int idAnimalFavorito = -1;
         List<NameValuePair> params0 = new ArrayList<NameValuePair>();
@@ -275,8 +331,6 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
             Log.e("JSON Data", "Didn't receive any data from server! - recomendador");
             return null;
         }
-
-
 
         // Preparing post params
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -343,44 +397,11 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
 
     }
 
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            Log.e("YEY","YEY0");
 
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
-            mMap = mapFragment.getMap();
-            mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
-
-            //setUpMap();
-
-            //mapFragment.getMapAsync(RecomendadorActivity.this);
-
-            //mapFragment.getMapAsync(this);
-            Log.e("YEY","YEY1");
-            // Check if we were successful in obtaining the map.
-
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
-    }
-
-
-    private void setUpMap() {
-        Log.e("YEY","YEY2");
-
-        mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
-        mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
-        mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
-        Log.e("YEY","YEY3");
-
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-
-
 }
 
 
