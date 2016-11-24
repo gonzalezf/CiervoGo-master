@@ -132,6 +132,13 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.mapRecomendador);
 
+            mMap = mapFragment.getMap();
+            mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
+            mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
+            mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
+            setMap(mMap);
+
+
         }
     }
 
@@ -151,7 +158,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         Picasso.with(this)
                 .load(favoritosList.get(contador).getLinkFotoAnimal())
                 .into(imageViewLinkFotoAnimal);
-        //setMap(mMap);
+        setMap(mMap);
 
 
 
@@ -175,7 +182,7 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         Picasso.with(this)
                 .load(favoritosList.get(contador).getLinkFotoAnimal())
                 .into(imageViewLinkFotoAnimal);
-        //setMap(mMap);
+        setMap(mMap);
     }
 
 
@@ -320,10 +327,6 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap.getUiSettings().setCompassEnabled(true); //habilitar brujula
-        mMap.getUiSettings().setZoomControlsEnabled(true);//habilitar zoom
-        mMap.setMyLocationEnabled(true); //habilitar boton ubicacion actual
-        Log.e("Ojo","se ejecutaaaaa!!!!");
     }
     public void  setMap(GoogleMap map){
         LatLng posicionAnimal = new LatLng(favoritosList.get(contador).getLatitud(), favoritosList.get(contador).getLongitud());
@@ -331,8 +334,8 @@ public class RecomendadorActivity extends ActionBarActivity implements OnMapRead
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(posicionAnimal)      // Sets the center of the map to Mountain View
-                .zoom(17)                   // Sets the zoom
-                .bearing(90)                // Sets the orientation of the camera to east
+                .zoom(8)                   // Sets the zoom
+                .bearing(0)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
